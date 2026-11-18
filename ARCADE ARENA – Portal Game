@@ -1,0 +1,90 @@
+			<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCADE ARENA — Portal Game Demo</title>
+<style>
+:root{--green:#087b2b;--lime:#b8ef19;--gold:#ffd21a;--dark:#071b0b;--panel:#0b3518}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% 0,#176b25 0,#061a0b 55%,#020b05 100%);color:#fff;font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1220px;margin:auto;padding:0 18px 40px}
+.ticker{height:32px;display:flex;align-items:center;gap:18px;overflow:hidden;white-space:nowrap;background:#101010;border-bottom:2px solid var(--gold);font-size:12px;font-weight:bold;padding:0 12px}
+.ticker .date{color:#ffe34a}.ticker .scroll{animation:marquee 22s linear infinite}
+@keyframes marquee{from{transform:translateX(30%)}to{transform:translateX(-100%)}}
+.brandbar{display:flex;align-items:center;justify-content:space-between;padding:16px 4px;gap:12px}
+.logo{font-weight:1000;font-size:clamp(22px,4vw,34px);letter-spacing:1px;color:var(--gold);text-shadow:2px 3px #17471c,0 0 15px #a4e62b}
+.logo span{color:#fff}.tag{font-size:12px;color:#d5f7d7;border:1px solid #4ca64f;border-radius:20px;padding:7px 12px}
+.hero{border:8px solid #e9d326;border-radius:12px;padding:clamp(22px,5vw,55px) 20px;text-align:center;background:linear-gradient(130deg,#0b5b24,#168b36 48%,#093b1a);box-shadow:0 0 0 3px #fff2a0 inset,0 10px 24px #0008;position:relative;overflow:hidden}
+.hero:before,.hero:after{content:"";position:absolute;width:230px;height:230px;border:22px solid #b5e91b;border-radius:50%;opacity:.12}
+.hero:before{left:-90px;top:-120px}.hero:after{right:-90px;bottom:-140px}
+.hero small{font-weight:bold;color:#e5ff9b;letter-spacing:3px}.hero h1{position:relative;margin:12px 0 8px;font-size:clamp(32px,7vw,72px);line-height:1;color:#ffe01b;text-shadow:3px 4px #713e00,6px 7px #102c0e;font-weight:1000}
+.hero p{position:relative;margin:0 auto;max-width:650px;font-weight:bold;font-size:clamp(14px,2vw,19px)}
+.hero .cta{display:inline-block;position:relative;margin-top:20px;padding:12px 25px;background:var(--gold);color:#1b2707;border-radius:7px;font-weight:900;text-decoration:none;box-shadow:0 4px #8d6c00}
+.score{margin:18px 0 26px;padding:17px;border:5px ridge #c8d4c8;border-radius:12px;text-align:center;background:repeating-linear-gradient(45deg,#0b3116,#0b3116 5px,#0e3c1b 5px,#0e3c1b 10px);box-shadow:0 7px 18px #0009}
+.score h2{margin:0 0 3px;font-size:clamp(18px,3vw,30px);text-shadow:2px 2px #000}
+.score .number{font-family:monospace;font-size:clamp(34px,7vw,68px);font-weight:900;letter-spacing:2px;color:#f4fff0;text-shadow:0 0 10px #aaff8b}
+.score small{color:#d5f6c7}
+.section-title{display:flex;align-items:center;gap:12px;margin:28px 0 14px}
+.section-title h2{margin:0;color:#ffe34a;font-size:24px;text-shadow:2px 2px #000}
+.section-title:after{content:"";height:2px;flex:1;background:linear-gradient(90deg,#d9b900,transparent)}
+.games{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.game{background:linear-gradient(160deg,#145b28,#082712);border:2px solid #4c9c38;border-radius:12px;overflow:hidden;box-shadow:0 7px 15px #0008}
+.art{height:145px;display:grid;place-items:center;font-size:65px;background:radial-gradient(circle,#58a92b,#0b3d1a 70%);border-bottom:2px solid #a5d82a}
+.gamebody{padding:14px}.game h3{margin:0 0 6px;color:#ffe34a}.game p{margin:0 0 12px;color:#d7e9d7;font-size:13px;line-height:1.45}
+.play{border:0;border-radius:7px;background:var(--gold);color:#1d2808;font-weight:900;padding:11px 14px;width:100%;cursor:pointer}.play:hover{filter:brightness(1.08)}
+.notice{margin-top:22px;padding:13px;border:1px solid #4d853f;border-radius:9px;background:#071d0d;color:#cfe8ce;font-size:12px;line-height:1.5}
+footer{text-align:center;padding:24px 0 0;color:#9bb99a;font-size:12px}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:5;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}.dialog{width:min(440px,100%);background:#0b3518;border:2px solid #b5df30;border-radius:14px;padding:20px;box-shadow:0 15px 40px #000}
+.dialog h2{margin-top:0;color:#ffe34a}.close{float:right;background:none;border:0;color:#fff;font-size:24px;cursor:pointer}
+.dialog button.action{background:var(--gold);border:0;padding:10px 16px;border-radius:7px;font-weight:bold;cursor:pointer}
+#gameArea{min-height:100px;padding:12px 0}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.tile{font-size:26px;padding:14px 4px;background:#1a6a2d;border:1px solid #b2e33c;border-radius:8px;cursor:pointer}
+@media(max-width:760px){.games{grid-template-columns:1fr 1fr}.art{height:120px}}
+@media(max-width:480px){.wrap{padding:0 10px 28px}.games{grid-template-columns:1fr}.brandbar{align-items:flex-start;flex-direction:column}.hero{border-width:5px}.score{padding:12px}}
+</style>
+</head>
+<body>
+<div class="ticker"><span class="date" id="clock"></span><span>◆</span><span class="scroll">SELAMAT DATANG DI ARCADE ARENA — PILIH PERMAINAN FAVORITMU DAN NIKMATI MODE DEMO DENGAN POIN VIRTUAL</span></div>
+<div class="wrap">
+  <header class="brandbar"><div class="logo">ARCADE<span> ARENA</span></div><div class="tag">PORTAL MINI GAME • MODE DEMO</div></header>
+  <section class="hero">
+    <small>WELCOME TO THE PLAY ZONE</small>
+    <h1>MAIN &amp; BERSENANG-SENANG</h1>
+    <p>Temukan tantangan seru, kumpulkan skor, dan pecahkan rekor permainanmu.</p>
+    <a class="cta" href="#games">PILIH PERMAINAN</a>
+  </section>
+  <section class="score"><h2>SKOR DEMO HARI INI</h2><div class="number" id="score">001.250</div><small>Poin virtual untuk hiburan — tidak memiliki nilai uang</small></section>
+  <div class="section-title" id="games"><h2>🎮 PILIH GAME</h2></div>
+  <section class="games">
+    <article class="game"><div class="art">🧠</div><div class="gamebody"><h3>Memory Match</h3><p>Temukan pasangan simbol yang sama. Latih ingatan dan raih skor terbaik.</p><button class="play" onclick="openGame('memory')">MAIN SEKARANG</button></div></article>
+    <article class="game"><div class="art">⚡</div><div class="gamebody"><h3>Reflex Challenge</h3><p>Uji kecepatan reaksimu. Tekan tombol saat berubah menjadi hijau.</p><button class="play" onclick="openGame('reflex')">MAIN SEKARANG</button></div></article>
+    <article class="game"><div class="art">🔢</div><div class="gamebody"><h3>Tebak Angka</h3><p>Tebak angka rahasia dari 1 sampai 20 dalam kesempatan terbatas.</p><button class="play" onclick="openGame('guess')">MAIN SEKARANG</button></div></article>
+  </section>
+  <div class="notice"><b>Informasi demo:</b> Website ini adalah contoh portal permainan hiburan. Semua permainan menggunakan poin virtual saja. Tidak tersedia taruhan uang asli, deposit, penarikan, atau hadiah bernilai uang.</div>
+  <footer>© 2026 ARCADE ARENA • DEMO GAME PORTAL</footer>
+</div>
+<div class="modal" id="modal"><div class="dialog"><button class="close" onclick="closeGame()">×</button><div id="gameContent"></div></div></div>
+<script>
+const clock=document.getElementById('clock');
+function tick(){clock.textContent=new Date().toLocaleString('id-ID',{weekday:'long',day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})+' (GMT+7)'}
+tick();setInterval(tick,1000);
+let score=1250;function addScore(n){score+=n;document.getElementById('score').textContent=score.toLocaleString('id-ID').replaceAll(',','.')}
+function openGame(type){
+ const modal=document.getElementById('modal'),content=document.getElementById('gameContent');modal.classList.add('open');
+ if(type==='memory'){
+  const icons=['🍀','⭐','🎯','🍉','🚀','🎲','💎','🎮'];let deck=[...icons,...icons].sort(()=>Math.random()-.5),first=null,lock=false,matches=0;
+  content.innerHTML='<h2>Memory Match</h2><p>Buka dua kartu dan temukan pasangan yang sama.</p><div class="tiles" id="tiles"></div><p id="msg">Pasangan ditemukan: 0/8</p>';
+  const area=document.getElementById('tiles');deck.forEach((v,i)=>{let b=document.createElement('button');b.className='tile';b.textContent='❔';b.onclick=()=>{if(lock||b.dataset.open||b.dataset.done)return;b.textContent=v;b.dataset.open='1';if(!first){first=b;return}lock=true;if(first.textContent===b.textContent){first.dataset.done='1';b.dataset.done='1';matches++;addScore(20);document.getElementById('msg').textContent='Pasangan ditemukan: '+matches+'/8';first=null;lock=false;if(matches===8)document.getElementById('msg').textContent='Hebat! Semua pasangan ditemukan. +160 poin.'}else{let prev=first;first=null;setTimeout(()=>{prev.textContent='❔';b.textContent='❔';delete prev.dataset.open;delete b.dataset.open;lock=false},700)}};area.appendChild(b)});
+ }else if(type==='reflex'){
+  content.innerHTML='<h2>Reflex Challenge</h2><p>Tekan mulai, tunggu tombol berubah hijau, lalu klik secepat mungkin.</p><button class="action" id="start">MULAI</button><div id="gameArea"></div>';
+  document.getElementById('start').onclick=()=>{let btn=document.getElementById('start'),area=document.getElementById('gameArea');btn.disabled=true;btn.textContent='TUNGGU...';area.innerHTML='<p>Jangan klik dulu…</p>';let delay=1200+Math.random()*3000;setTimeout(()=>{let t=performance.now();area.innerHTML='<button class="action" style="background:#42e66a;width:100%;padding:28px" id="hit">KLIK SEKARANG!</button>';document.getElementById('hit').onclick=()=>{let ms=Math.round(performance.now()-t);area.innerHTML='<h3>Waktu reaksi: '+ms+' ms</h3><p>'+(ms<300?'Refleks hebat!':'Terus berlatih!')+'</p>';addScore(Math.max(5,Math.round(500-ms)));btn.disabled=false;btn.textContent='COBA LAGI'}}},delay)};
+ }else{
+  let answer=1+Math.floor(Math.random()*20),tries=5;
+  content.innerHTML='<h2>Tebak Angka</h2><p>Tebak angka rahasia antara 1–20. Kamu punya 5 kesempatan.</p><input id="guessInput" type="number" min="1" max="20" style="padding:10px;width:100%;border-radius:7px;border:0;margin:8px 0"><button class="action" id="guessBtn">TEBAK</button><p id="hint">Ayo mulai!</p>';
+  document.getElementById('guessBtn').onclick=()=>{let val=Number(document.getElementById('guessInput').value),hint=document.getElementById('hint');if(val<1||val>20){hint.textContent='Masukkan angka 1 sampai 20.';return}tries--;if(val===answer){hint.textContent='Benar! Kamu mendapat 50 poin.';addScore(50);document.getElementById('guessBtn').disabled=true}else if(tries===0){hint.textContent='Kesempatan habis. Angkanya '+answer+'.';document.getElementById('guessBtn').disabled=true}else hint.textContent=(val<answer?'Terlalu kecil.':'Terlalu besar.')+' Sisa kesempatan: '+tries};
+ }
+}
+function closeGame(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeGame()});
+</script>
+</body></html>
